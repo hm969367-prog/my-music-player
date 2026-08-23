@@ -34,7 +34,7 @@
         h2 { font-size: 22px; margin-bottom: 16px; font-weight: 700; }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; }
         
-        .card { background-color: #181818; padding: 16px; border-radius: 8px; cursor: pointer; transition: background-color 0.3s; position: relative; }
+        .card { background-color: #181818; padding: 16px; border-radius: 8px; cursor: pointer; transition: 0.2s; position: relative; }
         .card:hover { background-color: #282828; }
         .card img { width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 6px; margin-bottom: 12px; }
         .card-title { font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 4px; }
@@ -43,9 +43,6 @@
         .play-btn { position: absolute; right: 24px; bottom: 75px; width: 44px; height: 44px; border-radius: 50%; background-color: #1db954; display: flex; justify-content: center; align-items: center; opacity: 0; transform: translateY(6px); transition: 0.2s; box-shadow: 0 8px 16px rgba(0,0,0,0.4); }
         .play-btn i { color: #000; font-size: 16px; margin-left: 2px; }
         .card:hover .play-btn { opacity: 1; transform: translateY(0); }
-
-        /* Hidden YT Background Player */
-        #yt-player-container { position: absolute; top: -9999px; left: -9999px; }
 
         /* Bottom Player Bar */
         .player-bar { position: fixed; bottom: 0; left: 0; width: 100%; height: 90px; background-color: #181818; border-top: 1px solid #282828; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; z-index: 100; }
@@ -83,47 +80,45 @@
     <div class="sidebar">
         <div class="logo"><i class="fa-brands fa-spotify"></i> Spotify</div>
         <div class="nav-items">
-            <div class="nav-item active" onclick="loadCategory('Indian Top Hits')"><i class="fa-solid fa-house"></i> Home</div>
+            <div class="nav-item active" onclick="loadCategory('Arijit Singh')"><i class="fa-solid fa-house"></i> Home</div>
             <div class="nav-item" onclick="loadCategory('Bollywood Romantic')"><i class="fa-solid fa-heart"></i> Bollywood</div>
-            <div class="nav-item" onclick="loadCategory('Punjabi Hits')"><i class="fa-solid fa-fire"></i> Punjabi</div>
-            <div class="nav-item" onclick="loadCategory('Haryanvi Hits')"><i class="fa-solid fa-music"></i> Haryanvi</div>
+            <div class="nav-item" onclick="loadCategory('Sidhu Moose Wala')"><i class="fa-solid fa-fire"></i> Punjabi</div>
+            <div class="nav-item" onclick="loadCategory('Masoom Sharma')"><i class="fa-solid fa-music"></i> Haryanvi</div>
         </div>
     </div>
 
     <!-- Main Content -->
     <div class="main-content">
-        <!-- Top Search Bar -->
         <div class="topbar">
             <div class="search-box">
                 <i class="fa-solid fa-magnifying-glass" style="color: #b3b3b3;"></i>
-                <input type="text" id="searchInput" placeholder="Search any Hindi, Punjabi, Haryanvi song or Artist..." onkeypress="handleKey(event)">
+                <input type="text" id="searchInput" placeholder="Search Hindi, Punjabi, Haryanvi songs..." onkeypress="handleKey(event)">
             </div>
             <button class="btn-search" onclick="searchMusic()">Search</button>
         </div>
 
-        <!-- Quick Categories -->
         <div class="genre-chips">
-            <button class="chip active" onclick="loadCategory('Indian Trending')">Trending India</button>
-            <button class="chip" onclick="loadCategory('Arijit Singh')">Arijit Singh</button>
+            <button class="chip active" onclick="loadCategory('Arijit Singh')">Arijit Singh</button>
             <button class="chip" onclick="loadCategory('Sidhu Moose Wala')">Sidhu Moose Wala</button>
-            <button class="chip" onclick="loadCategory('Masoom Sharma')">Haryanvi Rap</button>
-            <button class="chip" onclick="loadCategory('Yo Yo Honey Singh')">Honey Singh</button>
+            <button class="chip" onclick="loadCategory('Masoom Sharma')">Haryanvi</button>
+            <button class="chip" onclick="loadCategory('Honey Singh')">Honey Singh</button>
+            <button class="chip" onclick="loadCategory('Shreya Ghoshal')">Shreya Ghoshal</button>
         </div>
 
-        <h2 id="sectionTitle">Trending in India</h2>
+        <h2 id="sectionTitle">Trending Tracks</h2>
         <div class="grid" id="songsGrid"></div>
     </div>
 
-    <!-- Background YouTube Engine -->
-    <div id="yt-player-container"><div id="yt-engine"></div></div>
+    <!-- Audio Element -->
+    <audio id="audioEngine"></audio>
 
-    <!-- Bottom Player -->
+    <!-- Bottom Player Bar -->
     <div class="player-bar">
         <div class="current-track">
-            <img id="currentCover" src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=100" alt="Track">
+            <img id="currentCover" src="https://picsum.photos/100/100" alt="Track">
             <div class="track-info">
-                <div class="track-name" id="currentTitle">Select a track</div>
-                <div class="artist-name" id="currentArtist">Spotify Music Engine</div>
+                <div class="track-name" id="currentTitle">Select a song</div>
+                <div class="artist-name" id="currentArtist">Spotify Engine</div>
             </div>
         </div>
 
@@ -147,34 +142,86 @@
         </div>
     </div>
 
-    <!-- YouTube API Engine -->
-    <script src="https://www.youtube.com/iframe_api"></script>
     <script>
-        // Preset Indian Trending Playlist
-        let currentPlaylist = [
-            { id: "T1e0U2qfS44", title: "O Maahi", artist: "Arijit Singh", cover: "https://images.unsplash.com/photo-1518609878373-06d740f60d8b?w=300" },
-            { id: "kXYiU_JCYtU", title: "295", artist: "Sidhu Moose Wala", cover: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=300" },
-            { id: "JGwWNGJdvx8", title: "Chaleya", artist: "Arijit Singh, Anirudh", cover: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=300" },
-            { id: "09R8_2nJtjg", title: "Desi Kalakaar", artist: "Yo Yo Honey Singh", cover: "https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=300" },
-            { id: "fJ9rUzIMcZQ", title: "Goli Mare Tera Baap", artist: "Haryanvi Hits", cover: "https://images.unsplash.com/photo-1498038432885-c6f3f1b912ee?w=300" }
-        ];
-
+        const audio = document.getElementById('audioEngine');
+        let currentPlaylist = [];
         let currentIndex = 0;
-        let player;
-        let isPlaying = false;
-        let progressInterval;
 
-        function onYouTubeIframeAPIReady() {
-            player = new YT.Player('yt-engine', {
-                height: '100',
-                width: '100',
-                videoId: currentPlaylist[0].id,
-                playerVars: { 'autoplay': 0, 'controls': 0 },
-                events: {
-                    'onStateChange': onPlayerStateChange
+        window.onload = () => {
+            loadCategory('Arijit Singh');
+        };
+
+        function handleKey(e) {
+            if (e.key === 'Enter') searchMusic();
+        }
+
+        function searchMusic() {
+            const query = document.getElementById('searchInput').value.trim();
+            if (query) {
+                document.getElementById('sectionTitle').innerText = `Results for "${query}"`;
+                fetchJioSaavnSongs(query);
+            }
+        }
+
+        function loadCategory(cat) {
+            document.getElementById('searchInput').value = cat;
+            document.getElementById('sectionTitle').innerText = `${cat} Hits`;
+            fetchJioSaavnSongs(cat);
+        }
+
+        async function fetchJioSaavnSongs(query) {
+            const grid = document.getElementById('songsGrid');
+            grid.innerHTML = '<p style="color:#aaa;">Loading songs...</p>';
+
+            try {
+                // Free direct Saavn streaming endpoint
+                const res = await fetch(`https://saavn.dev/api/search/songs?query=${encodeURIComponent(query)}&page=1&limit=24`);
+                const json = await res.json();
+                
+                const results = json.data.results;
+                if (!results || results.length === 0) {
+                    grid.innerHTML = '<p style="color:#aaa;">No songs found. Try another search.</p>';
+                    return;
                 }
-            });
-            renderGrid(currentPlaylist);
+
+                currentPlaylist = results.map(item => {
+                    // Highest quality audio link choose karna
+                    const streamUrls = item.downloadUrl;
+                    const bestUrl = streamUrls[streamUrls.length - 1].url;
+                    
+                    // Highest quality image
+                    const covers = item.image;
+                    const bestCover = covers[covers.length - 1].url;
+
+                    return {
+                        title: item.name.replace(/&quot;/g, '"').replace(/&#039;/g, "'"),
+                        artist: item.artists.primary.map(a => a.name).join(', '),
+                        cover: bestCover,
+                        audioUrl: bestUrl
+                    };
+                });
+
+                renderGrid(currentPlaylist);
+            } catch (err) {
+                // Fallback to iTunes API if Saavn Dev Server is busy
+                fallbackSearch(query);
+            }
+        }
+
+        async function fallbackSearch(query) {
+            try {
+                const res = await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(query)}&entity=song&limit=24`);
+                const data = await res.json();
+                currentPlaylist = data.results.map(item => ({
+                    title: item.trackName,
+                    artist: item.artistName,
+                    cover: item.artworkUrl100.replace('100x100bb', '400x400bb'),
+                    audioUrl: item.previewUrl
+                }));
+                renderGrid(currentPlaylist);
+            } catch (e) {
+                document.getElementById('songsGrid').innerHTML = '<p style="color:red;">Error loading songs. Please try again.</p>';
+            }
         }
 
         function renderGrid(songs) {
@@ -202,17 +249,20 @@
             document.getElementById('currentArtist').innerText = song.artist;
             document.getElementById('currentCover').src = song.cover;
 
-            if (player && player.loadVideoById) {
-                player.loadVideoById(song.id);
-            }
+            audio.src = song.audioUrl;
+            audio.play().then(() => {
+                document.getElementById('playIcon').className = "fa-solid fa-pause";
+            }).catch(e => console.log("Playback error:", e));
         }
 
         function togglePlay() {
-            if (!player) return;
-            if (isPlaying) {
-                player.pauseVideo();
+            if (!audio.src) return;
+            if (audio.paused) {
+                audio.play();
+                document.getElementById('playIcon').className = "fa-solid fa-pause";
             } else {
-                player.playVideo();
+                audio.pause();
+                document.getElementById('playIcon').className = "fa-solid fa-play";
             }
         }
 
@@ -220,7 +270,7 @@
             if (currentIndex < currentPlaylist.length - 1) {
                 playSong(currentIndex + 1);
             } else {
-                playSong(0); // Repeat list
+                playSong(0);
             }
         }
 
@@ -230,43 +280,20 @@
             }
         }
 
-        function onPlayerStateChange(event) {
-            const playIcon = document.getElementById('playIcon');
-            if (event.data === YT.PlayerState.PLAYING) {
-                isPlaying = true;
-                playIcon.className = "fa-solid fa-pause";
-                startProgressBar();
-            } else {
-                isPlaying = false;
-                playIcon.className = "fa-solid fa-play";
-                clearInterval(progressInterval);
+        // Live Progress Update
+        audio.ontimeupdate = () => {
+            if (audio.duration) {
+                const current = audio.currentTime;
+                const total = audio.duration;
+                document.getElementById('progressBar').value = (current / total) * 100;
+                document.getElementById('currentTime').innerText = formatTime(current);
+                document.getElementById('totalDuration').innerText = formatTime(total);
             }
+        };
 
-            // Auto Next Song when track ends
-            if (event.data === YT.PlayerState.ENDED) {
-                nextSong();
-            }
-        }
-
-        function startProgressBar() {
-            clearInterval(progressInterval);
-            progressInterval = setInterval(() => {
-                if (player && player.getCurrentTime) {
-                    const current = player.getCurrentTime();
-                    const total = player.getDuration();
-                    if (total > 0) {
-                        document.getElementById('progressBar').value = (current / total) * 100;
-                        document.getElementById('currentTime').innerText = formatTime(current);
-                        document.getElementById('totalDuration').innerText = formatTime(total);
-                    }
-                }
-            }, 1000);
-        }
-
-        function seekSong(value) {
-            if (player && player.getDuration) {
-                const seekToTime = (value / 100) * player.getDuration();
-                player.seekTo(seekToTime, true);
+        function seekSong(val) {
+            if (audio.duration) {
+                audio.currentTime = (val / 100) * audio.duration;
             }
         }
 
@@ -276,45 +303,10 @@
             return `${m}:${s < 10 ? '0' : ''}${s}`;
         }
 
-        function handleKey(e) {
-            if (e.key === 'Enter') searchMusic();
-        }
-
-        // Live Dynamic Search via Invidious / iTunes metadata
-        async function searchMusic() {
-            const query = document.getElementById('searchInput').value.trim();
-            if (!query) return;
-
-            document.getElementById('sectionTitle').innerText = `Results for "${query}"`;
-            document.getElementById('songsGrid').innerHTML = '<p style="color:#aaa;">Searching tracks...</p>';
-
-            try {
-                const res = await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(query)}&entity=song&limit=15`);
-                const data = await res.json();
-
-                if (data.results.length === 0) {
-                    document.getElementById('songsGrid').innerHTML = '<p style="color:#aaa;">No songs found.</p>';
-                    return;
-                }
-
-                currentPlaylist = data.results.map(item => ({
-                    id: item.trackName, // Will fallback to instant preview/search
-                    title: item.trackName,
-                    artist: item.artistName,
-                    cover: item.artworkUrl100.replace('100x100bb', '400x400bb'),
-                    previewUrl: item.previewUrl
-                }));
-
-                renderGrid(currentPlaylist);
-            } catch (err) {
-                document.getElementById('songsGrid').innerHTML = '<p style="color:red;">Error loading tracks.</p>';
-            }
-        }
-
-        function loadCategory(cat) {
-            document.getElementById('searchInput').value = cat;
-            searchMusic();
-        }
+        // Auto play next song
+        audio.onended = () => {
+            nextSong();
+        };
     </script>
 </body>
 </html>
